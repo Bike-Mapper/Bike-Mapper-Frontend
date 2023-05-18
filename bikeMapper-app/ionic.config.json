@@ -1,0 +1,7 @@
+{
+  "name": "bikeMapper-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
