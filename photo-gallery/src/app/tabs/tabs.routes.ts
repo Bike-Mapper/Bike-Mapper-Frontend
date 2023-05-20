@@ -22,6 +22,11 @@ export const routes: Routes = [
           import('../Perfil/tab3.page').then((m) => m.Perfil),
       },
       {
+        path: 'tab4',
+        loadComponent: () =>
+          import('../Ofertas/tab4.page').then((m) => m.Ofertas),
+      },
+      {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full',
