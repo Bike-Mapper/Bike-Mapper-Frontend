@@ -9,7 +9,7 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent]
 })
-export class Tab2Page {
+export class Carteira {
 
   constructor() {}
 
