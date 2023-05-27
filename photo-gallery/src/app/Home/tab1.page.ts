@@ -16,7 +16,7 @@ export class Home {
   constructor(private http: HttpClient) {}
 
   sendPostRequest() {
-    const url = 'http://localhost:3000'; // Replace with your API endpoint URL
+    const url = 'http://localhost:8100'; // Replace with your API endpoint URL
     const data = { key1: 'value1', key2: 'value2' }; // Replace with your request payload
 
     this.http.post(url, data).subscribe({
