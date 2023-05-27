@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
-// import { HttpClient, Headers, RequestOptions } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
-// TODO: Resolver importa;áo do modulo de post 
+// TODO: Resolver importação do modulo de post 
 
 @Component({
   selector: 'app-tab1',
@@ -13,25 +13,21 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   imports: [IonicModule, ExploreContainerComponent],
 })
 export class Home {
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  // sendPostRequest() {
-  //   var headers = new Headers();
-  //   headers.append("Accept", 'application/json');
-  //   headers.append('Content-Type', 'application/json' );
-  //   const requestOptions = new RequestOptions({ headers: headers });
+  sendPostRequest() {
+    const url = 'http://localhost:3000'; // Replace with your API endpoint URL
+    const data = { key1: 'value1', key2: 'value2' }; // Replace with your request payload
 
-  //   let postData = {
-  //           "name": "Customer004",
-  //           "email": "customer004@email.com",
-  //           "tel": "0000252525"
-  //   }
-
-  //   this.http.post("http://127.0.0.1:3000/customers", postData, requestOptions)
-  //     .subscribe(data => {
-  //       console.log(data['_body']);
-  //      }, error => {
-  //       console.log(error);
-  //     });
-  // }
+    this.http.post(url, data).subscribe({
+      next: (response) => {
+        // Handle successful response
+        console.log('POST request successful:', response);
+      },
+      error: (error) => {
+        // Handle error
+        console.error('Error sending POST request:', error);
+      }
+    });
+  }
 }
