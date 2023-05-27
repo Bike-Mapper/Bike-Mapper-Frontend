@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { CheckboxChangeEventDetail, IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 
 @Component({
@@ -9,6 +9,21 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent],
 })
-export class Perfil {
-  constructor() {}
+export class Perfil implements CheckboxChangeEventDetail {
+  value: any;
+  checked: boolean;
+  counter: number;
+
+  constructor() {
+    this.checked = false;
+    this.counter = 0;
+  }
+
+  dump(): void
+  {
+    this.checked = !this.checked;
+    this.counter++;
+    console.log(this.counter);
+  }
+
 }
