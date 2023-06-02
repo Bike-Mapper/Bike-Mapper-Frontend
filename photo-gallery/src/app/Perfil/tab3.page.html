@@ -12,13 +12,13 @@
 
   <ion-list lines="none">
     <ion-item>
-      <ion-label>Usuário:</ion-label>
+      <ion-label>Usuário: {{user.name}}</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>Email:</ion-label>
+      <ion-label>Email {{user.email}}:</ion-label>
     </ion-item>
     <ion-item>
-      <ion-label>Data de Nascimento:</ion-label>
+      <ion-label>Data de Nascimento: {{user.dataNasc}}</ion-label>
     </ion-item>
     <ion-item>
       <ion-checkbox (click)="dump()">Perfil Privado:</ion-checkbox>

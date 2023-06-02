@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule, NavController } from '@ionic/angular';
-import { NavigationExtras} from '@angular/router';
+import { BgServiceService } from '../services/bg-service.service';
 
 @Component({
   selector: 'app-login',
@@ -12,23 +12,21 @@ import { NavigationExtras} from '@angular/router';
 })
 export class LoginPage implements OnInit {
   
-  constructor(public nav: NavController) {
-
-  }
-
-  ngOnInit() {
-  }
-
   user = {
     name: "João da Silva Sauro",
     id: "432",
     email: "joao@silva.com.br",
+    dataNasc:"12/03/2000",
     interests:["walking,cycling,sleeping"]
   };
 
-  launchTabsPage() {
+  constructor(private bgService:BgServiceService, public nav:NavController) {  }
 
-    this.nav.navigateForward(['tabs'], {state: this.user});
+  ngOnInit() { }
+
+  async launchTabsPage() {
+    await this.bgService.setUser(this.user);
+    this.nav.navigateForward(['tabs']);
     }
 
     //console.log("click");
