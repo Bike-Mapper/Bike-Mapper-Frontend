@@ -26,10 +26,10 @@ export class BgServiceService {
     console.log("Interests: "+ JSON.parse(JSON.stringify(this.user.interests)))
   }
   
-  //Muda info user (todos os parâmetros
+  //muda info user
   setUser(user:any){
     //console.log("entrei em setUser()");
-    this.user.name = user.name;
+    this.user.name = user.name; 
     this.user.id = user.id;
     this.user.email = user.email;
     this.user.dataNasc = user.dataNasc;
