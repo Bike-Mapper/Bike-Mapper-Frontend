@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
+import { BgServiceService } from '../services/bg-service.service';
 
 @Component({
   selector: 'app-tab4',
@@ -10,5 +11,9 @@ import { ExploreContainerComponent } from '../explore-container/explore-containe
   imports: [IonicModule, ExploreContainerComponent],
 })
 export class Ofertas {
-  constructor() {}
+  constructor(private bgService: BgServiceService) {
+    bgService.showUser()
+  }
+
+
 }
