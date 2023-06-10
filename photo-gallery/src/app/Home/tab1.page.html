@@ -26,12 +26,12 @@
 
   <ion-list style="text-align:center">
 
-    <ion-button (click) = "sendPostRequest()">
+    <ion-button (click) = "getUserLocation()">
       <ion-icon slot="start" name="alert-circle-outline" ></ion-icon>
       Reportar problema na via
     </ion-button>
 
-    <ion-button>
+    <ion-button (click) = "markOnMap()">
       <ion-icon slot="start" name="map-outline" ></ion-icon>
       Criar Trajeto
     </ion-button>
