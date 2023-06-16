@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+
+    image: bike-mapper-app
+
+    container_name: bike-mapper-app
+
+    volumes:
+      - ./entrypoint.sh:/usr/local/bin/entrypoint.sh
+      - ./photo-gallery/:/app/
+
+    working_dir: /app
+
+    command: entrypoint.sh
+
+    environment:
+        PORT: ${APP_PORT}
+        APP_API_DOMAIN: ${APP_API_DOMAIN}
+        APP_API_PORT: ${API_PORT}
+
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+
+    networks:
+      - bike_bike-mapper
+
+
+networks:
+  bike_bike-mapper:
+    external: true

@@ -11,16 +11,39 @@ import { BgServiceService } from '../services/bg-service.service';
   imports: [IonicModule, CommonModule],
 })
 export class LoginPage implements OnInit {
-  
+
+
   user = {
-    name: "João da Silva Sauro",
+    name: "Nome Errado",
     id: "432",
     email: "joao@silva.com.br",
     dataNasc:"12/03/2000",
     interests:["walking,cycling,sleeping"]
   };
 
-  constructor(private bgService:BgServiceService, public nav:NavController) {  }
+  constructor(private bgService:BgServiceService, public nav:NavController) { 
+    
+    bgService.login("abc@xyz.com", "123456").then(
+      (response: any) => {
+        console.log("Res: ", response);
+        console.log("Token: ", response["token"]);
+        return bgService.get_profile(response["token"]);
+      }
+    )
+    .then((response: any) => {
+      let user_info = response;
+      console.log(user_info);
+      
+      this.user = {
+        name: user_info["firstName"] + " " + user_info["lastName"],
+        id: "432",
+        email: "joao@silva.com.br",
+        dataNasc:"12/03/2000",
+        interests:["walking,cycling,sleeping"]
+      }; })
+  .catch(() => {});
+
+  }
 
   ngOnInit() { }
 
