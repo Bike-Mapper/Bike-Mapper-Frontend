@@ -33,22 +33,22 @@ export class Home implements OnInit {
     this.getAllImperfection();
   }
   
-  get lat():number
+  get long():number
   {
     return this._lat;
   }
 
-  private set lat(value:number)
+  private set long(value:number)
   {
     this._lat = value;
   }
 
-  get long():number
+  get lat():number
   {
     return this._long
   }
 
-  private set long(value:number)
+  private set lat(value:number)
   {
     this._long = value;
   }
@@ -85,16 +85,17 @@ export class Home implements OnInit {
 
   reportImperfection()
   {
-    this._bgService.reportImperfectionAPI([this.lat, this.long]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
   }
 
   getAllImperfection()
   {
-    this._bgService.getAllImperfections().then((value: Array<JSON>) => {
-      value.forEach((content: any) => {
-        this.markOnMap([content["lat"], content["long"]]);
+    this._bgService.getAllImperfections().then((value: Array<any>) => {
+      console.log("---> ", value);
+      value.forEach((coords: any) => {
+        this.markOnMap([coords[0], coords[1]]);
       })
-    }).catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
+    });//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
   }
 
   markOnMap(coords: Array<number>) // place a marker on map

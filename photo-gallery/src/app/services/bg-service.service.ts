@@ -25,6 +25,13 @@ export class BgServiceService {
 
   constructor(private http: HttpClient) {
     this._url = 'http://localhost:8100/api';
+
+    let stored_user = localStorage.getItem("user");
+
+    if(stored_user) {
+      this.user = JSON.parse(stored_user);
+      this._token = this.user.token;
+    }
   }
 
   get Url(): string
@@ -127,12 +134,10 @@ export class BgServiceService {
     }).toPromise();
   }
 
-  async getAllImperfections(): Promise<Array<JSON>>
+  async getAllImperfections(): Promise<Array<any>>
   {
-    return this.http.get(this._url + "/imperfection", {
-      headers: new HttpHeaders().set('x-auth-token', this.Token),
-    }).toPromise().then((response: any) => {
-      return response["imperfection"];
+    return this.http.get(this._url + "/imperfection").toPromise().then((response: any) => {
+      return response;
     });
   }
 
