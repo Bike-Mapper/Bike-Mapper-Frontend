@@ -20,22 +20,18 @@
       <ion-label slot="end">100</ion-label>
     </div>
   </ion-item>
-
-  <ion-row style="height: 200px"></ion-row> <!-- TODO: Deixar menos hardcodado preferencialmente usando css-->
-
-  <ion-card>
-    <img alt="Silhouette of mountains" src="https://media.wired.com/photos/59269cd37034dc5f91bec0f1/191:100/w_1280,c_limit/GoogleMapTA.jpg" />
-  </ion-card>
-
+  <body>
+    <div id="map" class="map" #map></div>
+  </body>
 
   <ion-list style="text-align:center">
 
-    <ion-button (click) = "sendPostRequest()">
+    <ion-button (click) = "getUserLocation()">
       <ion-icon slot="start" name="alert-circle-outline" ></ion-icon>
       Reportar problema na via
     </ion-button>
 
-    <ion-button>
+    <ion-button (click) = "markOnMap()">
       <ion-icon slot="start" name="map-outline" ></ion-icon>
       Criar Trajeto
     </ion-button>
