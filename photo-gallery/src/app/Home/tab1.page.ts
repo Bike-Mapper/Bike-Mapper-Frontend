@@ -12,6 +12,7 @@ import { Point } from 'ol/geom';
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import XyzSource from 'ol/source/XYZ'
+import { BgServiceService } from '../services/bg-service.service';
 // TODO: Resolver importação do modulo de post 
 
 @Component({
@@ -25,8 +26,12 @@ export class Home implements OnInit {
   public map!: Map;
   private _lat!:number;
   private _long!:number;
+  private _bgService: BgServiceService;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, bgService: BgServiceService) {
+    this._bgService = bgService;
+    this.getAllImperfection();
+  }
   
   get lat():number
   {
@@ -59,9 +64,10 @@ export class Home implements OnInit {
       target: 'map',
       view: new View({ 
         center: [0, 0],
-        zoom: 1,
+        zoom: 2,
       }),
     });
+    this.getUserLocation()
   }
 
   getUserLocation(){
@@ -72,15 +78,28 @@ export class Home implements OnInit {
         this.long = position.coords.longitude;
         this.map.getView().setCenter([this.long, this.lat])
         this.map.getView().setZoom(15);
-        console.log(this.lat, this.long);
         // we can send this info to the backend
       })
     }
   }
 
-  markOnMap() // place a marker on map
+  reportImperfection()
   {
-    const pos = [this.long, this.lat];
+    this._bgService.reportImperfectionAPI([this.lat, this.long]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+  }
+
+  getAllImperfection()
+  {
+    this._bgService.getAllImperfections().then((value: Array<JSON>) => {
+      value.forEach((content: any) => {
+        this.markOnMap([content["lat"], content["long"]]);
+      })
+    }).catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
+  }
+
+  markOnMap(coords: Array<number>) // place a marker on map
+  {
+    const pos = [coords[0], coords[1]];
     const marker = new Feature({
       geometry: new Point(pos)
     })

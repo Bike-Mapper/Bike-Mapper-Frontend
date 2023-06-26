@@ -27,7 +27,7 @@ export class LoginPage implements OnInit {
       (response: any) => {
         console.log("Res: ", response);
         console.log("Token: ", response["token"]);
-        return bgService.get_profile(response["token"]);
+        return bgService.get_profile();
       }
     )
     .then((response: any) => {
