@@ -27,10 +27,13 @@ export class Home implements OnInit {
   private _lat!:number;
   private _long!:number;
   private _bgService: BgServiceService;
+  private _imperfections!: Array<Array<number>>;
 
   constructor(private http: HttpClient, bgService: BgServiceService) {
     this._bgService = bgService;
+    this._imperfections = [];
     this.getAllImperfection();
+    this.markOnMap();
   }
   
   get long():number
@@ -55,19 +58,8 @@ export class Home implements OnInit {
 
   ngOnInit(): void {
     useGeographic(); // important
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      target: 'map',
-      view: new View({ 
-        center: [0, 0],
-        zoom: 2,
-      }),
-    });
     this.getUserLocation()
+    this.InitializeMap();
   }
 
   getUserLocation(){
@@ -93,22 +85,26 @@ export class Home implements OnInit {
     this._bgService.getAllImperfections().then((value: Array<any>) => {
       console.log("---> ", value);
       value.forEach((coords: any) => {
-        this.markOnMap([coords[0], coords[1]]);
+        this._imperfections.push([coords[0], coords[1]]);
       })
     });//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
   }
 
-  markOnMap(coords: Array<number>) // place a marker on map
+  markOnMap() // place a marker on map
   {
-    const pos = [coords[0], coords[1]];
-    const marker = new Feature({
-      geometry: new Point(pos)
-    })
+    const markers: Array<Feature> = [];
+    for(const pos of this._imperfections)
+    {
+      const marker = new Feature({
+        geometry: new Point(pos)
+      })
+      markers.push(marker);
+    }
 
     const vectorSource = new VectorSource({
-      features: [marker]
+      features: markers
     })
-
+    
     const vectorLayer = new VectorLayer({
       source: vectorSource
     })
@@ -116,7 +112,7 @@ export class Home implements OnInit {
     const xyzSource = new XyzSource({
       url: 'http://tile.osm.org/{z}/{x}/{y}.png'
     })
-    
+
     const tileLayer = new TileLayer({
       source: xyzSource
     })
@@ -140,4 +136,21 @@ export class Home implements OnInit {
       }
     });
   }
+
+  private InitializeMap(): void
+  {
+    this.map = new Map({
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'map',
+      view: new View({ 
+        center: [0, 0],
+        zoom: 2,
+      }),
+    });
+  }
+
 }
