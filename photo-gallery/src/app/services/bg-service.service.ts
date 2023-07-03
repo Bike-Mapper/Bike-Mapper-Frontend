@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { retry } from 'rxjs';
+import { resourceUsage } from 'process';
 
 
 
@@ -19,10 +20,28 @@ export class BgServiceService {
   };
   
   
-  private url: string;
+  private _url: string;
+  private _token!: string;
 
   constructor(private http: HttpClient) {
-    this.url = 'http://localhost:8100/api';
+    this._url = 'http://localhost:8100/api';
+
+    let stored_user = localStorage.getItem("user");
+
+    if(stored_user) {
+      this.user = JSON.parse(stored_user);
+      this._token = this.user.token;
+    }
+  }
+
+  get Url(): string
+  {
+    return this._url;
+  }
+
+  get Token(): string
+  {
+    return this._token;
   }
   
   //Imprime info do user
@@ -58,7 +77,10 @@ export class BgServiceService {
   async login(email: string, password: string) {
     const login_info = { email: email, password: password };
 
-    return this.http.post(this.url + "/auth", login_info).toPromise();
+    return this.http.post(this._url + "/auth", login_info).toPromise().then((response: any) => {
+      this._token = response["token"];
+      return response;
+    });
 
     // .subscribe({
     //   next: (response: any) => {
@@ -83,10 +105,10 @@ export class BgServiceService {
 
   }
 
-  async get_profile(token: string) {
+  async get_profile() {
 
-    return this.http.get(this.url + "/profile/me", {
-      headers: new HttpHeaders().set('x-auth-token', token),
+    return this.http.get(this._url + "/profile/me", {
+      headers: new HttpHeaders().set('x-auth-token', this._token),
     }).toPromise();
     
     
@@ -103,6 +125,20 @@ export class BgServiceService {
     //   }
     // });
     // return null;
+  }
+
+  async reportImperfectionAPI(coords: Array<number>)
+  {
+    return this.http.post(this._url + "/imperfection", {lat: coords[0], long: coords[1]}, {
+      headers: new HttpHeaders().set('x-auth-token', this.Token),
+    }).toPromise();
+  }
+
+  async getAllImperfections(): Promise<Array<any>>
+  {
+    return this.http.get(this._url + "/imperfection").toPromise().then((response: any) => {
+      return response;
+    });
   }
 
 }

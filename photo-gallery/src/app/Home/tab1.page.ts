@@ -12,6 +12,7 @@ import { Point } from 'ol/geom';
 import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import XyzSource from 'ol/source/XYZ'
+import { BgServiceService } from '../services/bg-service.service';
 // TODO: Resolver importação do modulo de post 
 
 @Component({
@@ -25,43 +26,39 @@ export class Home implements OnInit {
   public map!: Map;
   private _lat!:number;
   private _long!:number;
+  private _bgService: BgServiceService;
+  private _imperfections!: Array<Array<number>>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, bgService: BgServiceService) {
+    this._bgService = bgService;
+  }
   
-  get lat():number
+  get long():number
   {
     return this._lat;
   }
 
-  private set lat(value:number)
+  private set long(value:number)
   {
     this._lat = value;
   }
 
-  get long():number
+  get lat():number
   {
     return this._long
   }
 
-  private set long(value:number)
+  private set lat(value:number)
   {
     this._long = value;
   }
 
   ngOnInit(): void {
+    this._imperfections = [];
     useGeographic(); // important
-    this.map = new Map({
-      layers: [
-        new TileLayer({
-          source: new OSM(),
-        }),
-      ],
-      target: 'map',
-      view: new View({ 
-        center: [0, 0],
-        zoom: 1,
-      }),
-    });
+    this.getAllImperfection();
+    this.getUserLocation();
+    this.InitializeMap();
   }
 
   getUserLocation(){
@@ -72,23 +69,43 @@ export class Home implements OnInit {
         this.long = position.coords.longitude;
         this.map.getView().setCenter([this.long, this.lat])
         this.map.getView().setZoom(15);
-        console.log(this.lat, this.long);
         // we can send this info to the backend
       })
     }
   }
 
+  reportImperfection()
+  {
+    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+  }
+
+  getAllImperfection()
+  {
+    this._bgService.getAllImperfections().then((value: Array<any>) => {
+      console.log("---> ", value);
+      value.forEach((coords: any) => {
+        this._imperfections.push([coords[0], coords[1]]);
+      })
+    })
+    .then(() => {this.markOnMap();})
+    ;//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
+  }
+
   markOnMap() // place a marker on map
   {
-    const pos = [this.long, this.lat];
-    const marker = new Feature({
-      geometry: new Point(pos)
-    })
+    const markers: Array<Feature> = [];
+    for(const pos of this._imperfections)
+    {
+      const marker = new Feature({
+        geometry: new Point(pos)
+      })
+      markers.push(marker);
+    }
 
     const vectorSource = new VectorSource({
-      features: [marker]
+      features: markers
     })
-
+    
     const vectorLayer = new VectorLayer({
       source: vectorSource
     })
@@ -96,10 +113,12 @@ export class Home implements OnInit {
     const xyzSource = new XyzSource({
       url: 'http://tile.osm.org/{z}/{x}/{y}.png'
     })
-    
+
     const tileLayer = new TileLayer({
       source: xyzSource
     })
+
+    console.log("===> ", markers);
 
     this.map.setLayers([tileLayer, vectorLayer]);
     
@@ -120,4 +139,21 @@ export class Home implements OnInit {
       }
     });
   }
+
+  private InitializeMap(): void
+  {
+    this.map = new Map({
+      layers: [
+        new TileLayer({
+          source: new OSM(),
+        }),
+      ],
+      target: 'map',
+      view: new View({ 
+        center: [0, 0],
+        zoom: 2,
+      }),
+    });
+  }
+
 }
