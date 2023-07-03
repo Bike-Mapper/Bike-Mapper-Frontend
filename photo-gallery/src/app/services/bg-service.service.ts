@@ -55,7 +55,6 @@ export class BgServiceService {
   
   //muda info user
   setUser(user:any){
-    //console.log("entrei em setUser()");
     this.user.token = user.token;
     this.user.name = user.name; 
     this.user.id = user.id;
@@ -66,13 +65,9 @@ export class BgServiceService {
   
   //Devolve objeto user
   getUser(){
-    //console.log("entrei em getUser()");
     return this.user;
   }
 
-  // make_profile() {
-
-  // }
 
   async login(email: string, password: string) {
     const login_info = { email: email, password: password };
@@ -81,28 +76,6 @@ export class BgServiceService {
       this._token = response["token"];
       return response;
     });
-
-    // .subscribe({
-    //   next: (response: any) => {
-    //     token = response["token"];
-    //     console.log('POST request successful:', response, token);
-
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error sending POST request:', error);
-    //     token = "";
-    //   }
-    // });
-
-    // while(token == "A") {
-
-    // };
-
-
-    // console.log('TOKEN: ', token);
-
-    // return token;
-
   }
 
   async get_profile() {
@@ -110,21 +83,6 @@ export class BgServiceService {
     return this.http.get(this._url + "/profile/me", {
       headers: new HttpHeaders().set('x-auth-token', this._token),
     }).toPromise();
-    
-    
-    // .subscribe({
-    //   next: (response: any) => {
-    //     token = response.token;
-    //     console.log('POST request successful:', response);
-        
-    //     return response;
-
-    //   },
-    //   error: (error: any) => {
-    //     console.error('Error sending POST request:', error);
-    //   }
-    // });
-    // return null;
   }
 
   async reportImperfectionAPI(coords: Array<number>)
