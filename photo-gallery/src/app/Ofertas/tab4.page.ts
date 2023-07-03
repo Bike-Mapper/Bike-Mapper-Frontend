@@ -27,6 +27,12 @@ export class Ofertas implements OnInit{
   get_companies()
   {
     // get from API all companies
+    this.bgService.getCompanies().then((response: any) => {
+      response.forEach((value: any, index: number) => {
+        this.companies.push(new Company(value["name"], value["description"], value["price"], value["imagePath"]));
+      });
+    })
+    
     for(let i = 0; i < 25; i++)
     {
       this.companies.push(new Company("Name" + i, "Description" + i, "price" + i, "imagePath" + i));

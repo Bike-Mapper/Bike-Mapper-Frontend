@@ -99,4 +99,11 @@ export class BgServiceService {
     });
   }
 
+  async getCompanies(): Promise<Array<any>>
+  {
+    return this.http.get(this._url + "/company").toPromise().then((response: any) => {
+      return response;
+    });
+  }
+
 }
