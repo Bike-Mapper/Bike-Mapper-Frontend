@@ -31,9 +31,6 @@ export class Home implements OnInit {
 
   constructor(private http: HttpClient, bgService: BgServiceService) {
     this._bgService = bgService;
-    this._imperfections = [];
-    this.getAllImperfection();
-    this.markOnMap();
   }
   
   get long():number
@@ -57,8 +54,10 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
+    this._imperfections = [];
     useGeographic(); // important
-    this.getUserLocation()
+    this.getAllImperfection();
+    this.getUserLocation();
     this.InitializeMap();
   }
 
@@ -87,7 +86,9 @@ export class Home implements OnInit {
       value.forEach((coords: any) => {
         this._imperfections.push([coords[0], coords[1]]);
       })
-    });//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
+    })
+    .then(() => {this.markOnMap();})
+    ;//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
   }
 
   markOnMap() // place a marker on map
@@ -116,6 +117,8 @@ export class Home implements OnInit {
     const tileLayer = new TileLayer({
       source: xyzSource
     })
+
+    console.log("===> ", markers);
 
     this.map.setLayers([tileLayer, vectorLayer]);
     
