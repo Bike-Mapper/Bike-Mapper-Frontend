@@ -28,9 +28,11 @@ export class Home implements OnInit {
   private _long!:number;
   private _bgService: BgServiceService;
   private _imperfections!: Array<Array<number>>;
+  user: any;
 
   constructor(private http: HttpClient, bgService: BgServiceService) {
     this._bgService = bgService;
+    this.user = bgService.getUser();
   }
   
   get long():number
@@ -76,7 +78,9 @@ export class Home implements OnInit {
 
   reportImperfection()
   {
-    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});
+    this.user.score = this._bgService.getScore();
+      
   }
 
   getAllImperfection()
@@ -155,5 +159,6 @@ export class Home implements OnInit {
       }),
     });
   }
+
 
 }
