@@ -106,11 +106,4 @@ export class BgServiceService {
     });
   }
 
-  async getScore(): Promise<any>
-  {
-    return this.http.get(this._url + "/user/score", {
-      headers: new HttpHeaders().set('x-auth-token', this._token),
-    }).toPromise();
-  }
-
 }

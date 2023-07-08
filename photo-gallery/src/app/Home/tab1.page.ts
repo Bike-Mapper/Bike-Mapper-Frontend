@@ -31,8 +31,8 @@ export class Home implements OnInit {
   user: any;
 
   constructor(private http: HttpClient, bgService: BgServiceService) {
-    this._bgService = bgService;
-    this.user = bgService.getUser();
+    this._bgService = bgService; 
+    this.user = {};
   }
   
   get long():number
@@ -56,6 +56,11 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
+    this._bgService.get_profile().then((profile) => {
+      console.log(profile);
+      this.user = profile;
+    } );
+
     this._imperfections = [];
     useGeographic(); // important
     this.getAllImperfection();
@@ -78,8 +83,13 @@ export class Home implements OnInit {
 
   reportImperfection()
   {
-    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});
-    this.user.score = this._bgService.getScore();
+    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)}).then(
+      () => {
+        this._bgService.get_profile().then((profile: any) => {
+          this.user.score = profile["score"];
+        });
+      }
+    )
       
   }
 
