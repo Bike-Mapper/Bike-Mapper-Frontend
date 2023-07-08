@@ -13,19 +13,31 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-grid>
+  <ion-grid *ngFor="let company of companies; let i = index">
     <ion-row>
+      <ion-col>
+        <ion-card>
+          <img [src]="'https://picsum.photos/512/512?random=' + i">
+          <ion-card-header>
+            <ion-card-title>{{company.name}}</ion-card-title>
+            <ion-card-subtitle>{{company.price}}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>{{company.description}}</ion-card-content>
+          <ion-button fill = "clear">Mais informações</ion-button>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <!-- <ion-row>
       <ion-col>
         <ion-card>
           <img alt="Scary Goose" src="https://upload.wikimedia.org/wikipedia/commons/b/b2/Scary_goose.jpg" />
           <ion-card-header>
-            <ion-card-title>Velocity Cyclery</ion-card-title>
-            <ion-card-subtitle>Pneus de carbono na compra de uma bicicleta </ion-card-subtitle>
+            <ion-card-title></ion-card-title>
+            <ion-card-subtitle></ion-card-subtitle>
           </ion-card-header>
         
           <ion-card-content>
-            Bonanza de liquidação de verão! Economize até 70% nas bicicletas e equipamentos mais quentes da última temporada. 
-            Pegue suas ofertas antes que acabem.
+            
           </ion-card-content>
           <ion-button fill="clear"> Mais informações</ion-button>
         </ion-card>
@@ -107,6 +119,6 @@
           <ion-button fill="clear"> Mais informações</ion-button>
         </ion-card>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
   </ion-grid>
 </ion-content>

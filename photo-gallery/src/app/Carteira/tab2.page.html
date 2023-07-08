@@ -21,16 +21,16 @@
     </div>
   </ion-item>
 
-  <ion-grid *ngFor ="let item of items; let index">
+  <ion-grid *ngFor ="let item of items; let i = index">
     <ion-row>
       <ion-col>
         <ion-thumbnail>
-          <img [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
+          <img [src]="'https://picsum.photos/80/80?random=' + i" alt="avatar" />
         </ion-thumbnail>
       </ion-col>
       <ion-col>
         <ion-thumbnail>
-          <img [src]="'https://picsum.photos/80/80?random=' + index" alt="avatar" />
+          <img [src]="'https://picsum.photos/80/80?random=' + i+1" alt="avatar" />
         </ion-thumbnail>
       </ion-col>
     </ion-row>
