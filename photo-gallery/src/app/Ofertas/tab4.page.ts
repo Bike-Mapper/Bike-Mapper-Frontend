@@ -33,10 +33,10 @@ export class Ofertas implements OnInit{
       });
     })
     
-    for(let i = 0; i < 25; i++)
-    {
-      this.companies.push(new Company("Name" + i, "Description" + i, "price" + i, "imagePath" + i));
-    }
+    // for(let i = 0; i < 25; i++)
+    // {
+    //   this.companies.push(new Company("Name" + i, "Description" + i, "price" + i, "imagePath" + i));
+    // }
   }
   
 }
