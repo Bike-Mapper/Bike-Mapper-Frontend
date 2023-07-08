@@ -27,8 +27,6 @@ export class Perfil implements CheckboxChangeEventDetail {
   dump(): void
   {
     this.checked = !this.checked;
-    this.counter++;
-    console.log(this.counter);
   }
 
 }
