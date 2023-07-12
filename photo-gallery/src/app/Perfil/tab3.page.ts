@@ -21,11 +21,4 @@ export class Perfil implements CheckboxChangeEventDetail {
     this.user = bgService.getUser();
   }
 
-  dump(): void
-  {
-    this.checked = !this.checked;
-    this.counter++;
-    console.log(this.counter);
-  }
-
 }
