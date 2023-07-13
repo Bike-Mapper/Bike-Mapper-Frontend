@@ -13,6 +13,8 @@ import VectorSource from 'ol/source/Vector'
 import VectorLayer from 'ol/layer/Vector';
 import XyzSource from 'ol/source/XYZ'
 import { BgServiceService } from '../services/bg-service.service';
+import Style from 'ol/style/Style';
+import Icon from 'ol/style/Icon';
 // TODO: Resolver importação do modulo de post 
 
 @Component({
@@ -56,9 +58,9 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this._imperfections = [];
     useGeographic(); // important
+    this.InitializeMap();
     this.getAllImperfection();
     this.getUserLocation();
-    this.InitializeMap();
   }
 
   getUserLocation(){
@@ -76,34 +78,47 @@ export class Home implements OnInit {
 
   reportImperfection()
   {
-    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+    // this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
+    
+    //Just for testing
+    this._imperfections.push([this.long, this.lat]);
+    this.markOnMap();
   }
 
   getAllImperfection()
   {
-    this._bgService.getAllImperfections().then((value: Array<any>) => {
-      console.log("---> ", value);
-      value.forEach((coords: any) => {
-        this._imperfections.push([coords[0], coords[1]]);
-      })
-    })
-    .then(() => {this.markOnMap();})
-    ;//.catch((err: Error) => {console.log("Failed to get all imperfection: " + err)})
+    // this._bgService.getAllImperfections().then((value: Array<any>) => {
+    //   console.log("---> ", value);
+    //   value.forEach((coords: any) => {
+    //     this._imperfections.push([coords[0], coords[1]]);
+    //   })
+    // })
+    // .then(() => {this.markOnMap();});
+
   }
 
   markOnMap() // place a marker on map
   {
     const markers: Array<Feature> = [];
+    const iconStyle = new Style({
+      image: new Icon({
+        anchor: [0.5, 46],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: 'https://openlayers.org/en/v3.20.1/examples/data/icon.png',
+      })
+    })
     for(const pos of this._imperfections)
     {
       const marker = new Feature({
-        geometry: new Point(pos)
+        geometry: new Point(pos),
       })
+      marker.setStyle(iconStyle);
       markers.push(marker);
     }
 
     const vectorSource = new VectorSource({
-      features: markers
+      features: markers,
     })
     
     const vectorLayer = new VectorLayer({
