@@ -8,8 +8,9 @@ import { resourceUsage } from 'process';
 @Injectable({
   providedIn: 'root'
 })
+// Classe que lida com a comunicação entre o backend e o frontend
 export class BgServiceService {
-  
+  // dicinoário para o usuário
   private user = {
     token: "",
     name: "",
@@ -19,8 +20,9 @@ export class BgServiceService {
     interests:[]
   };
   
-  
+  // url da página
   private _url: string;
+  // token do usuário
   private _token!: string;
 
   constructor(private http: HttpClient) {
@@ -34,11 +36,13 @@ export class BgServiceService {
     }
   }
 
+  // getter para Url
   get Url(): string
   {
     return this._url;
   }
 
+  // getter para o token
   get Token(): string
   {
     return this._token;
@@ -68,7 +72,7 @@ export class BgServiceService {
     return this.user;
   }
 
-
+  // Loga o usuário e guarda a sessão no token
   async login(email: string, password: string) {
     const login_info = { email: email, password: password };
 
@@ -78,6 +82,7 @@ export class BgServiceService {
     });
   }
 
+  // getter para o profile
   async get_profile() {
 
     return this.http.get(this._url + "/profile/me", {
@@ -85,6 +90,7 @@ export class BgServiceService {
     }).toPromise();
   }
 
+  // Registra imperfeição no backend
   async reportImperfectionAPI(coords: Array<number>)
   {
     return this.http.post(this._url + "/imperfection", {lat: coords[0], long: coords[1]}, {
@@ -92,6 +98,7 @@ export class BgServiceService {
     }).toPromise();
   }
 
+  // Coleta todas as imperfeições que existem no backend
   async getAllImperfections(): Promise<Array<any>>
   {
     return this.http.get(this._url + "/imperfection").toPromise().then((response: any) => {
@@ -99,6 +106,7 @@ export class BgServiceService {
     });
   }
 
+  // Coleta todas as companhias registradas no backend
   async getCompanies(): Promise<Array<any>>
   {
     return this.http.get(this._url + "/company").toPromise().then((response: any) => {

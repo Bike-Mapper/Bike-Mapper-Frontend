@@ -10,9 +10,11 @@ import { BgServiceService } from '../services/bg-service.service';
   standalone: true,
   imports: [IonicModule, CommonModule],
 })
+// Classe que representa a tela de login
 export class LoginPage implements OnInit {
 
-
+  // mock para verificar se a funcionalidade do login está funcionando
+  // #COMMENT: acho que remover esse mock é uma boa
   user = {
     name: "Nome Errado",
     id: "432",
@@ -50,6 +52,7 @@ export class LoginPage implements OnInit {
       .catch(() => { });
   }
 
+  // Função chamada ao iniciar o app
   ngOnInit() { }
 
   async launchTabsPage() {
@@ -57,7 +60,4 @@ export class LoginPage implements OnInit {
     this.nav.navigateForward(['tabs']);
   }
 
-  //console.log("click");
-  //https://stackoverflow.com/questions/65607106/pass-the-data-between-pages-in-ionic-5
-  //https://ionicacademy.com/pass-data-angular-router-ionic-4/ 
 }

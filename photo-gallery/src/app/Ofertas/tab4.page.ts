@@ -17,7 +17,9 @@ import { Cupom } from './Cupom.component';
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent, CommonModule],
 })
+// Classe que representa a tela de ofertas
 export class Ofertas implements OnInit{
+  // Lista de companias parceiras do app que tem possuem cupom
   companies: Array<Company>;
   @ViewChild (IonModal) modal!: IonModal;
 
@@ -26,6 +28,7 @@ export class Ofertas implements OnInit{
     this.companies = [];
   }
 
+  // função que abre a tela de cupom (Usualmente essa função é chamada quando se aperta o botão "Obter cupom")
   async openModal() {
     const modal = await this.modalCtrl.create({
       component: Cupom,
@@ -40,10 +43,12 @@ export class Ofertas implements OnInit{
     }
   }
 
+  // Função chamada quando se inicia o app
   ngOnInit(): void {
     this.get_companies();
   }
   
+  // Coleta todas as companias que estão no backend
   get_companies()
   {
     // get from API all companies
@@ -59,6 +64,7 @@ export class Ofertas implements OnInit{
     }
   }
 
+  // Evento chamado quando o usuário aperta o botão "obter cupom", ela lida com os eventos quando um cupom é confirmado ou cancelado
   on_will_dismiss(event: Event)
   {
     console.log(this.modal);
@@ -72,7 +78,7 @@ export class Ofertas implements OnInit{
       console.log("canceled");
     }
   }
-
+  // #COMMENT: Acho uma boa retirarmos as duas funções abaixo para não causar confusão
   confirm()
   {
     this.modal.dismiss("confirmed", 'confirm');
