@@ -114,4 +114,12 @@ export class BgServiceService {
     });
   }
 
+  async buyCupom(company_id: string) {
+    return this.http.post(this._url + "/company/buy", {companyId: company_id}, {
+      headers: new HttpHeaders().set('x-auth-token', this.Token),
+    }).toPromise().then((response: any) => {
+      return response;
+    });
+  }
+
 }

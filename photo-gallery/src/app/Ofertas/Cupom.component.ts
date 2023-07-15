@@ -23,7 +23,7 @@ export class Cupom {
   // váriaveis para a criação do QR-code
   elementType = NgxQrcodeElementTypes.URL;
   correctionLevel = NgxQrcodeErrorCorrectionLevels.HIGH;
-  value = 'https://www.techiediaries.com/';
+  value = 'https://empresa-1.com.br/';
 
   constructor(private modalCtrl: ModalController) {}
 

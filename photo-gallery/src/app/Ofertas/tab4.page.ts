@@ -18,10 +18,10 @@ import { Cupom } from './Cupom.component';
   imports: [IonicModule, ExploreContainerComponent, CommonModule],
 })
 // Classe que representa a tela de ofertas
-export class Ofertas implements OnInit{
+export class Ofertas implements OnInit {
   // Lista de companias parceiras do app que tem possuem cupom
   companies: Array<Company>;
-  @ViewChild (IonModal) modal!: IonModal;
+  @ViewChild(IonModal) modal!: IonModal;
 
   constructor(private bgService: BgServiceService, private modalCtrl: ModalController) {
     bgService.showUser()
@@ -29,9 +29,26 @@ export class Ofertas implements OnInit{
   }
 
   // função que abre a tela de cupom (Usualmente essa função é chamada quando se aperta o botão "Obter cupom")
-  async openModal() {
+  async openModal(i: number) {
+
+    let value: string = "";
+
+    await this.bgService.buyCupom(this.companies[i]["id"]).then((response: any) => {
+
+
+      if (response["accept"]) {
+        value = response["url"];
+      }
+      else {
+        value = "Você não tem pontos suficientes"
+      }
+
+    });
     const modal = await this.modalCtrl.create({
       component: Cupom,
+      componentProps: {
+        value: value
+      }
     });
     modal.present();
 
@@ -47,45 +64,41 @@ export class Ofertas implements OnInit{
   ngOnInit(): void {
     this.get_companies();
   }
-  
+
   // Coleta todas as companias que estão no backend
-  get_companies()
-  {
+  get_companies() {
     // get from API all companies
-    // this.bgService.getCompanies().then((response: any) => {
-    //   response.forEach((value: any, index: number) => {
-    //     this.companies.push(new Company(value["name"], value["description"], value["price"], value["imagePath"]));
-    //   });
-    // })
-    
-    for(let i = 0; i < 25; i++)
-    {
-      this.companies.push(new Company("Name" + i, "Description" + i, "price" + i, "imagePath" + i));
-    }
+    this.bgService.getCompanies().then((response: any) => {
+      response.forEach((value: any, index: number) => {
+        console.log("Value: ",value)
+        this.companies.push(new Company(value["name"], value["description"], value["price"], value["imagePath"], value["_id"]));
+      });
+    })
+
+    // for(let i = 0; i < 25; i++)
+    // {
+    //   this.companies.push(new Company("Name" + i, "Description" + i, "price" + i, "imagePath" + i, "https://exemplo-empresa-"+i+".com.br"));
+    // }
   }
 
   // Evento chamado quando o usuário aperta o botão "obter cupom", ela lida com os eventos quando um cupom é confirmado ou cancelado
-  on_will_dismiss(event: Event)
-  {
+  on_will_dismiss(event: Event) {
     console.log(this.modal);
     const ev = event as CustomEvent<OverlayEventDetail<string>>;
     if (ev.detail.role === 'confirm') {
       // render QR code
       console.log("Dismis modal");
     }
-    else if (ev.detail.role === 'cancel')
-    {
+    else if (ev.detail.role === 'cancel') {
       console.log("canceled");
     }
   }
   // #COMMENT: Acho uma boa retirarmos as duas funções abaixo para não causar confusão
-  confirm()
-  {
+  confirm() {
     this.modal.dismiss("confirmed", 'confirm');
   }
-  
-  async cancel()
-  {
+
+  async cancel() {
     this.modal.dismiss(null, "cancel");
     // const modal = await this.modal.getTop();
     // if(modal !== undefined)
@@ -93,9 +106,9 @@ export class Ofertas implements OnInit{
     //   console.log("blablabl");
     //   modal.dismiss();
     // }
-    
+
   }
-  
+
 }
 
 
