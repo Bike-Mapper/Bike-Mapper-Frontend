@@ -12,6 +12,7 @@ import { BgServiceService } from '../services/bg-service.service';
   imports: [IonicModule, ExploreContainerComponent, CommonModule]
 })
 
+// Classe que representa a carteira do usuário
 export class Carteira implements OnInit {
 
   items:string[] = [];

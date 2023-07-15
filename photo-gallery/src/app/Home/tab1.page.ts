@@ -24,11 +24,17 @@ import Icon from 'ol/style/Icon';
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent],
 })
+// Classe que representa a tela de Home
 export class Home implements OnInit {
+  // Mapa que aparece na tela de home
   public map!: Map;
+  // Latitude do usuário
   private _lat!:number;
+  // Longitude do usuário
   private _long!:number;
+  // Váriavel para fazer chamadas para o backend
   private _bgService: BgServiceService;
+  // Lista de imperfeioções que já foram reportadas
   private _imperfections!: Array<Array<number>>;
   user: any;
 
@@ -36,27 +42,34 @@ export class Home implements OnInit {
     this._bgService = bgService; 
     this.user = {};
   }
-  
+
+  // Getter para longitude
+  // #COMMENT: acho uma boa a gente mudar o nome do getter e do setter para não confundir o professor
+
   get long():number
   {
     return this._lat;
   }
 
+  // Setter para longitude
   private set long(value:number)
   {
     this._lat = value;
   }
 
+  // Getter para latitude
   get lat():number
   {
     return this._long
   }
 
+  // Setter para latitude
   private set lat(value:number)
   {
     this._long = value;
   }
 
+  // função chamada ao iniciar o app
   ngOnInit(): void {
     this._bgService.get_profile().then((profile) => {
       console.log(profile);
@@ -70,6 +83,7 @@ export class Home implements OnInit {
     this.getUserLocation();
   }
 
+  // Função para recolher o localização do usuário (o usuário precisa permitir a coleta de dados)
   getUserLocation(){
     if(navigator.geolocation)
     {
@@ -83,6 +97,7 @@ export class Home implements OnInit {
     }
   }
 
+  // função para reportar imperfeição. Usualmente chamada pelo botão "Reportar problema na via"
   reportImperfection()
   {
     this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)}).then(
@@ -100,6 +115,7 @@ export class Home implements OnInit {
     this.markOnMap();
   }
 
+  // Coleta todas as imperfeições no backend
   getAllImperfection()
   {
     // this._bgService.getAllImperfections().then((value: Array<any>) => {
@@ -112,6 +128,7 @@ export class Home implements OnInit {
 
   }
 
+  // Marca no mapa a imperfeição relatado pelo usuário (Usualmente essa função é chamada quando ao apertar o botão "Reportar problema na via")
   markOnMap() // place a marker on map
   {
     const markers: Array<Feature> = [];
@@ -154,22 +171,7 @@ export class Home implements OnInit {
     
   }
 
-  sendPostRequest() {
-    const url = 'http://localhost:8100'; // Replace with your API endpoint URL
-    const data = { key1: 'value1', key2: 'value2' }; // Replace with your request payload
-
-    this.http.post(url, data).subscribe({
-      next: (response) => {
-        // Handle successful response
-        console.log('POST request successful:', response);
-      },
-      error: (error) => {
-        // Handle error
-        console.error('Error sending POST request:', error);
-      }
-    });
-  }
-
+  // Cria uma instância do mapa
   private InitializeMap(): void
   {
     this.map = new Map({

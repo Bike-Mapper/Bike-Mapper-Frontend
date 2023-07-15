@@ -10,9 +10,12 @@ import { BgServiceService } from '../services/bg-service.service';
   standalone: true,
   imports: [IonicModule, ExploreContainerComponent],
 })
+// Classe que representa a tela de perfil
 export class Perfil implements CheckboxChangeEventDetail {
+  // variáveis para a quando se marca a caixinha
   value: any;
   checked: boolean;
+  // Usuário logado na sessão
   user:any;
 
   constructor(private bgService: BgServiceService) {
