@@ -20,12 +20,16 @@ import { Cupom } from './Cupom.component';
 // Classe que representa a tela de ofertas
 export class Ofertas implements OnInit {
   // Lista de companias parceiras do app que tem possuem cupom
+  user: any;
   companies: Array<Company>;
   @ViewChild(IonModal) modal!: IonModal;
+  bgService: BgServiceService;
 
-  constructor(private bgService: BgServiceService, private modalCtrl: ModalController) {
+  constructor(bgService: BgServiceService, private modalCtrl: ModalController) {
+    this.bgService = bgService;
     bgService.showUser()
     this.companies = [];
+    this.user = {}
   }
 
   // função que abre a tela de cupom (Usualmente essa função é chamada quando se aperta o botão "Obter cupom")
@@ -40,10 +44,22 @@ export class Ofertas implements OnInit {
         value = response["url"];
       }
       else {
-        value = "Você não tem pontos suficientes"
+        value = ""; null;//"Você não tem pontos suficientes";
+
       }
 
     });
+
+    if(value == "") {
+      return;
+    }
+
+    this.bgService.getUser();
+    this.bgService.get_profile().then((profile) => {
+      console.log(profile);
+      this.user = this.bgService.profile;
+    });
+
     const modal = await this.modalCtrl.create({
       component: Cupom,
       componentProps: {
@@ -58,11 +74,23 @@ export class Ofertas implements OnInit {
       // this.message = `Hello, ${data}!`;
       console.log("Confirmed");
     }
+
+    this.companies = this.companies.filter((_, j)=> j != i );
   }
 
   // Função chamada quando se inicia o app
-  ngOnInit(): void {
+  async ngOnInit() {
+    this.user = await this.bgService.get_profile();
     this.get_companies();
+  }
+
+
+  ionViewDidEnter() {
+    this.bgService.get_profile().then((profile) => {
+      console.log(profile);
+      this.user = this.bgService.profile;
+    });
+
   }
 
   // Coleta todas as companias que estão no backend
@@ -70,8 +98,10 @@ export class Ofertas implements OnInit {
     // get from API all companies
     this.bgService.getCompanies().then((response: any) => {
       response.forEach((value: any, index: number) => {
-        console.log("Value: ",value)
-        this.companies.push(new Company(value["name"], value["description"], value["price"], value["imagePath"], value["_id"]));
+        console.log("==> ", this.user);
+        if(!(this.user["cupons"] as string[]).includes(value["_id"])) {
+          this.companies.push(new Company(value["name"], value["description"], value["price"], value["image_path"], value["_id"]));
+        }
       });
     })
 

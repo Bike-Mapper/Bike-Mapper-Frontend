@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CheckboxChangeEventDetail, IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { BgServiceService } from '../services/bg-service.service';
@@ -11,7 +11,7 @@ import { BgServiceService } from '../services/bg-service.service';
   imports: [IonicModule, ExploreContainerComponent],
 })
 // Classe que representa a tela de perfil
-export class Perfil implements CheckboxChangeEventDetail {
+export class Perfil implements CheckboxChangeEventDetail, OnInit {
   // variáveis para a quando se marca a caixinha
   value: any;
   checked: boolean;
@@ -21,7 +21,17 @@ export class Perfil implements CheckboxChangeEventDetail {
   constructor(private bgService: BgServiceService) {
     this.checked = false;
     bgService.showUser();
-    this.user = bgService.getUser();
+
+    this.user = {
+      firstName: "",
+      lastName: "",
+      username: "",
+    }
+  }
+
+  async ngOnInit() {
+    
+    this.user = await this.bgService.get_profile();
   }
 
   dump(): void

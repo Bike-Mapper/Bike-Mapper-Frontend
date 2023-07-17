@@ -6,6 +6,19 @@
   </ion-toolbar>
 </ion-header>
 
+<ion-item>
+  <ion-avatar slot="start">
+    <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg"/>
+  </ion-avatar>
+
+  <ion-label> {{user.firstName}} {{user.lastName}} </ion-label>
+  
+  <div align="center">
+    <ion-icon name="logo-bitcoin" slot="end"></ion-icon>
+    <ion-label slot="end">{{user.score}}</ion-label>
+  </div>
+</ion-item>
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
@@ -17,10 +30,10 @@
     <ion-row>
       <ion-col>
         <ion-card>
-          <img [src]="'https://picsum.photos/512/512?random=' + i">
+          <img [src]=company.imagePath>
           <ion-card-header>
             <ion-card-title>{{company.name}}</ion-card-title>
-            <ion-card-subtitle>{{company.price}}</ion-card-subtitle>
+            <ion-card-subtitle>{{company.price}} pontos</ion-card-subtitle>
           </ion-card-header>
           <ion-card-content>{{company.description}}</ion-card-content>
           <ion-button fill = "clear" (click)="openModal(i)">Obter cupom</ion-button>

@@ -13,7 +13,7 @@
       <img alt="Silhouette of a person's head" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
     </ion-avatar>
 
-    <ion-label> Avatar Item </ion-label>
+    <ion-label> {{user.firstName}} {{user.lastName}} </ion-label>
     
     <div align="center">
       <ion-icon name="logo-bitcoin" slot="end"></ion-icon>
@@ -21,29 +21,20 @@
     </div>
   </ion-item>
 
-  <ion-grid *ngFor ="let item of items; let i = index">
+
+  <ion-grid *ngFor="let company of items; let i = index">
     <ion-row>
       <ion-col>
-        <ion-thumbnail>
-          <img [src]="'https://picsum.photos/80/80?random=' + i" alt="avatar" />
-        </ion-thumbnail>
-      </ion-col>
-      <ion-col>
-        <ion-thumbnail>
-          <img [src]="'https://picsum.photos/80/80?random=' + i+1" alt="avatar" />
-        </ion-thumbnail>
+        <ion-card>
+          <img [src]="''+company.image_path">
+          <ion-card-header>
+            <ion-card-title>{{company.name}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>{{company.description}}</ion-card-content>
+          <ion-button fill = "clear" (click)="openModal(i)">Abrir cupom</ion-button>
+        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-infinite-scroll>
-    <ion-infinite-scroll-content loadingText="Please wait..." loadingSpinner="bubbles"></ion-infinite-scroll-content>
-  </ion-infinite-scroll>
 
-  <!-- <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Carteira</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Carteira"></app-explore-container> -->
 </ion-content>

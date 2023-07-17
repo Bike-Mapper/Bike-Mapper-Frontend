@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { ExploreContainerComponent } from '../explore-container/explore-container.component';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +15,7 @@ import XyzSource from 'ol/source/XYZ'
 import { BgServiceService } from '../services/bg-service.service';
 import Style from 'ol/style/Style';
 import Icon from 'ol/style/Icon';
+import { Router } from '@angular/router';
 // TODO: Resolver importação do modulo de post 
 
 @Component({
@@ -29,52 +30,48 @@ export class Home implements OnInit {
   // Mapa que aparece na tela de home
   public map!: Map;
   // Latitude do usuário
-  private _lat!:number;
+  private _lat!: number;
   // Longitude do usuário
-  private _long!:number;
+  private _long!: number;
   // Váriavel para fazer chamadas para o backend
-  private _bgService: BgServiceService;
+  _bgService: BgServiceService;
   // Lista de imperfeioções que já foram reportadas
   private _imperfections!: Array<Array<number>>;
   user: any;
 
-  constructor(private http: HttpClient, bgService: BgServiceService) {
-    this._bgService = bgService; 
+  constructor(private http: HttpClient, bgService: BgServiceService, private router: Router) {
+    this._bgService = bgService;
     this.user = {};
   }
 
   // Getter para longitude
   // #COMMENT: acho uma boa a gente mudar o nome do getter e do setter para não confundir o professor
 
-  get long():number
-  {
+  get long(): number {
     return this._lat;
   }
 
   // Setter para longitude
-  private set long(value:number)
-  {
+  private set long(value: number) {
     this._lat = value;
   }
 
   // Getter para latitude
-  get lat():number
-  {
+  get lat(): number {
     return this._long
   }
 
   // Setter para latitude
-  private set lat(value:number)
-  {
+  private set lat(value: number) {
     this._long = value;
   }
 
   // função chamada ao iniciar o app
-  ngOnInit(): void {
-    this._bgService.get_profile().then((profile) => {
+  async ngOnInit() {
+    await this._bgService.get_profile().then((profile) => {
       console.log(profile);
-      this.user = profile;
-    } );
+      this.user = this._bgService.profile;
+    });
 
     this._imperfections = [];
     useGeographic(); // important
@@ -84,9 +81,8 @@ export class Home implements OnInit {
   }
 
   // Função para recolher o localização do usuário (o usuário precisa permitir a coleta de dados)
-  getUserLocation(){
-    if(navigator.geolocation)
-    {
+  getUserLocation() {
+    if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
         this.lat = position.coords.latitude;
         this.long = position.coords.longitude;
@@ -97,34 +93,40 @@ export class Home implements OnInit {
     }
   }
 
+  ionViewDidEnter() {
+    this._bgService.get_profile().then((profile) => {
+      console.log(profile);
+      this.user = this._bgService.profile;
+    });
+
+  }
+
   // função para reportar imperfeição. Usualmente chamada pelo botão "Reportar problema na via"
-  reportImperfection()
-  {
-    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)}).then(
+  reportImperfection() {
+    this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => { console.log("Error when tried to repor: " + err) }).then(
       () => {
         this._bgService.get_profile().then((profile: any) => {
           this.user.score = profile["score"];
         });
       }
     )
-      
+
     // this._bgService.reportImperfectionAPI([this.long, this.lat]).catch((err: Error) => {console.log("Error when tried to repor: " + err)});  
-    
+
     //Just for testing
     this._imperfections.push([this.long, this.lat]);
     this.markOnMap();
   }
 
   // Coleta todas as imperfeições no backend
-  getAllImperfection()
-  {
-    // this._bgService.getAllImperfections().then((value: Array<any>) => {
-    //   console.log("---> ", value);
-    //   value.forEach((coords: any) => {
-    //     this._imperfections.push([coords[0], coords[1]]);
-    //   })
-    // })
-    // .then(() => {this.markOnMap();});
+  getAllImperfection() {
+    this._bgService.getAllImperfections().then((value: Array<any>) => {
+      console.log("---> ", value);
+      value.forEach((coords: any) => {
+        this._imperfections.push([coords[0], coords[1]]);
+      })
+    })
+    .then(() => {this.markOnMap();});
 
   }
 
@@ -134,14 +136,14 @@ export class Home implements OnInit {
     const markers: Array<Feature> = [];
     const iconStyle = new Style({
       image: new Icon({
-        anchor: [0.5, 46],
+        anchor: [0.5, 85],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: 'https://openlayers.org/en/v3.20.1/examples/data/icon.png',
+        src: '/assets/pin.png',
+        scale: 0.4
       })
     })
-    for(const pos of this._imperfections)
-    {
+    for (const pos of this._imperfections) {
       const marker = new Feature({
         geometry: new Point(pos),
       })
@@ -152,7 +154,7 @@ export class Home implements OnInit {
     const vectorSource = new VectorSource({
       features: markers,
     })
-    
+
     const vectorLayer = new VectorLayer({
       source: vectorSource
     })
@@ -165,15 +167,12 @@ export class Home implements OnInit {
       source: xyzSource
     })
 
-    console.log("===> ", markers);
-
     this.map.setLayers([tileLayer, vectorLayer]);
-    
+
   }
 
   // Cria uma instância do mapa
-  private InitializeMap(): void
-  {
+  private InitializeMap(): void {
     this.map = new Map({
       layers: [
         new TileLayer({
@@ -181,12 +180,11 @@ export class Home implements OnInit {
         }),
       ],
       target: 'map',
-      view: new View({ 
+      view: new View({
         center: [0, 0],
         zoom: 2,
       }),
     });
   }
-
 
 }

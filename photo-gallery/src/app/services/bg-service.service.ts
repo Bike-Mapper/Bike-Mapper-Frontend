@@ -25,6 +25,8 @@ export class BgServiceService {
   // token do usuário
   private _token!: string;
 
+  profile : any = {}
+
   constructor(private http: HttpClient) {
     this._url = 'http://localhost:8100/api';
 
@@ -87,7 +89,14 @@ export class BgServiceService {
 
     return this.http.get(this._url + "/profile/me", {
       headers: new HttpHeaders().set('x-auth-token', this._token),
-    }).toPromise();
+    }).toPromise().then((profile: any)=> {
+      this.profile.score = profile["score"];
+      this.profile.cupons = profile["cupons"];
+      this.profile.firstName = profile["firstName"];
+      this.profile.lastName = profile["lastName"];
+
+      return profile;
+    } );
   }
 
   // Registra imperfeição no backend
@@ -110,6 +119,13 @@ export class BgServiceService {
   async getCompanies(): Promise<Array<any>>
   {
     return this.http.get(this._url + "/company").toPromise().then((response: any) => {
+      return response;
+    });
+  }
+  
+  async getCompany(company_id: string)
+  {
+    return this.http.get(this._url + "/company/"+company_id).toPromise().then((response: any) => {
       return response;
     });
   }
